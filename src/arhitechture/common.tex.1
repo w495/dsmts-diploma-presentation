@@ -1,0 +1,65 @@
+
+\subsection{Обзор}
+
+\frame{
+	\frametitle{\om Что предложили мы: из чего состоит} 
+		\tikzstyle{databasef} = [rectangle,thick,minimum size=1cm,draw=teal!50!black!50,top color=white,bottom color=teal!50!black!20,font=\itshape]
+		\tikzstyle{readerf} = [rectangle,rounded corners,thick,minimum size=0.5cm,draw=blue!50!black!50,top color=white,bottom color=blue!50!black!20,font=\itshape]
+		\tikzstyle{handlerf} = [rectangle,rounded corners,thick,minimum size=0.5cm,draw=green!50!black!50,top color=white,bottom color=green!50!black!20,font=\itshape]
+		\tikzstyle{decoderf} = [rounded rectangle,thick,minimum size=0.5cm,draw=red!50!black!50,top color=white,bottom color=red!50!black!20,font=\itshape]
+		\tikzstyle{corporaf} = [draw=yellow!50!black!70,thick,minimum height=0.5cm,minimum width=1cm,top color=yellow!20,bottom color=yellow!60!black!20,decorate,decoration={random steps,segment length=3pt,amplitude=1pt}]
+	\begin{tikzpicture}[thick, node distance=3cm, text height=1.5ex, text depth=.25ex, auto]
+		\node[databasef] 						(database)	{\small База данных};
+		
+		\begin{scope}[node distance=4cm]
+			\node[left of=database] 	(comment)	{
+				\begin{tabular}{l}
+					{\color{pacificorange} $\blacktriangleright$} Набор приложений.\\
+					{\color{pacificorange} $\blacktriangleright$} Могут быть удалены\\
+						\qquad друг от друга.\\
+					{\color{pacificorange} $\blacktriangleright$} Распределены\\
+						\qquad где это возможно.\\
+				\end{tabular} 
+			};
+		\end{scope}
+		
+		\node[readerf,above left of=database]	(reader)	{
+			\small 
+			\begin{tabular}{c}
+				Читатель \\
+				\color{pacificorange} $\vartriangleright$} Erlang
+			\end{tabular} 
+		};
+		\node[corporaf,left of=reader]			(corpora)	{\small Корпус En, Ru};
+		\node[handlerf,below left of=database]	(handler)	{\small Обработчик};
+		\node[decoderf,right of=database]		(decoder)	{\small Декодер};
+		\begin{scope}[node distance=2cm]		
+			\node[decoderf,below left  of=decoder]		(decoderweb)	{\small Веб};
+			\node[decoderf,below 	   of=decoder]		(decodercon)	{\small Консоль};
+			\node[		below 	   of=decodercon]		(human)	{
+				\includegraphics[height=2cm]{./vec/arch-human.eps}
+			};
+			\node[decoderf,below right of=decoder]		(decoderrest)	{\small Rest};
+			\node[above of=decoder]		(comm3)	{
+				\begin{tabular}{l}
+					{\color{pacificorange} $\blacktriangleright$} Redis Server.\\
+					{\color{pacificorange} $\blacktriangleright$} Erlang.\\ 
+				\end{tabular} 
+			};
+		\end{scope}
+			
+		\path[->, yellow!40!black!70] 	(corpora)	edge (reader);
+		\path[<-, blue] 				(database)	edge (reader);
+		\path[<->, blue] 				(database)	edge (handler);
+		\path[<->, red] 				(database)	edge (decoder);
+		\path[-, red, dotted] 				(decoder)	edge node[auto] {\scriptsize интерфейсы} (decoderweb);
+		\path[-, red, dotted] 				(decoder)	edge (decodercon);
+		\path[-, red, dotted] 				(decoder)	edge (decoderrest);
+
+		\path[<->, blue] 				(human)	edge (decoderweb);
+		\path[<->, blue] 				(human)	edge (decodercon);
+		\path[<->, blue] 				(human)	edge (decoderrest);
+
+	\end{tikzpicture}
+}
+
